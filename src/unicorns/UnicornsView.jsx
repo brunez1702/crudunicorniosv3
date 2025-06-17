@@ -6,6 +6,8 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import { useRef } from 'react';
+import jsPDF from 'jspdf';
+import "jspdf-autotable"
 
 export const UnicornsView = () => {
   const { 
@@ -52,11 +54,29 @@ export const UnicornsView = () => {
     }
   };
 
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Listado de Unicornios", 14, 10);
+
+    const tableColumn = ["Nombre", "Color", "Poder", "Edad"];
+    const tableRows = unicorns.map(({ name, color, power, age }) => [
+      name,
+      color,
+      power,
+      age,
+    ]);
+   
+    doc.save("unicorns.pdf");
+  };
+
   return (
     <div className="p-4">
       <Toast ref={toast} />
       <div className="flex justify-content-between align-items-center mb-4">
         <h2>Gestión de Unicornios 🦄</h2>
+        <button onClick={exportToPDF} className="btn btn-success mb-3">
+        Exportar PDF
+      </button>
         <Link to="/unicornios/crear">
           <Button 
             label="Crear Unicornio" 
@@ -65,6 +85,7 @@ export const UnicornsView = () => {
           />
         </Link>
       </div>
+      
 
       <DataTable 
         value={unicorns} 
